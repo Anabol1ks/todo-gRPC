@@ -1,4 +1,4 @@
-module todo-grpc
+module github.com/Anabol1ks/todo-gRPC
 
 go 1.23.0
 
