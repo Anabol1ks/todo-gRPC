@@ -2,7 +2,8 @@ package db
 
 import (
 	"log"
-	"todo-grpc/internal/models"
+
+	"github.com/Anabol1ks/todo-gRPC/internal/models"
 )
 
 func AutoMigrate() {
