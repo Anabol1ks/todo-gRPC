@@ -9,6 +9,7 @@ import (
 	"github.com/Anabol1ks/todo-gRPC/internal/auth"
 	"github.com/Anabol1ks/todo-gRPC/internal/config"
 	"github.com/Anabol1ks/todo-gRPC/internal/db"
+	"github.com/Anabol1ks/todo-gRPC/internal/middleware"
 	"github.com/Anabol1ks/todo-gRPC/internal/user"
 	"google.golang.org/grpc"
 )
@@ -25,7 +26,14 @@ func main() {
 		RefreshTTL:    config.RefreshTTL,
 	}
 
-	grpcServer := grpc.NewServer()
+	publicMethods := map[string]bool{
+		"/todo.UserService/Register": true,
+		"/todo.UserService/Login":    true,
+	}
+
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(middleware.AuthInterceptor(jwtManager, publicMethods)),
+	)
 
 	userService := &user.Service{
 		DB:  db.DB,

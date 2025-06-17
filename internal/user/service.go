@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"log"
 
 	todov1 "github.com/Anabol1ks/todo-gRPC/gen/go/proto/todo"
 	"github.com/Anabol1ks/todo-gRPC/internal/auth"
@@ -20,6 +21,8 @@ type Service struct {
 }
 
 func (s *Service) Register(ctx context.Context, req *todov1.RegisterRequest) (*todov1.AuthResponse, error) {
+	op := "Register"
+	log.Printf("[%s] start", op)
 	if err := req.Validate(); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "validation failed: %v", err)
 	}
@@ -56,6 +59,8 @@ func (s *Service) Register(ctx context.Context, req *todov1.RegisterRequest) (*t
 }
 
 func (s *Service) Login(ctx context.Context, req *todov1.LoginRequest) (*todov1.AuthResponse, error) {
+	op := "Login"
+	log.Printf("[%s] start", op)
 	if err := req.Validate(); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "validation failed: %v", err)
 	}
@@ -81,8 +86,15 @@ func (s *Service) Login(ctx context.Context, req *todov1.LoginRequest) (*todov1.
 }
 
 func (s *Service) GetProfile(ctx context.Context, req *todov1.GetProfileRequest) (*todov1.UserResponse, error) {
+	op := "GetProfile"
+	log.Printf("[%s] start", op)
+
+	userID, ok := ctx.Value("user_id").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Internal, "user_id not found in context")
+	}
 	var user models.User
-	if err := s.DB.First(&user, req.UserId).Error; err != nil {
+	if err := s.DB.First(&user, userID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, status.Error(codes.NotFound, "user not found")
 		}
