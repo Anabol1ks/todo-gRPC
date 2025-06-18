@@ -10,6 +10,7 @@ import (
 	"github.com/Anabol1ks/todo-gRPC/internal/config"
 	"github.com/Anabol1ks/todo-gRPC/internal/db"
 	"github.com/Anabol1ks/todo-gRPC/internal/middleware"
+	"github.com/Anabol1ks/todo-gRPC/internal/task"
 	"github.com/Anabol1ks/todo-gRPC/internal/user"
 	"google.golang.org/grpc"
 )
@@ -41,6 +42,12 @@ func main() {
 	}
 
 	todov1.RegisterUserServiceServer(grpcServer, userService)
+
+	TaskService := &task.Service{
+		DB:  db.DB,
+		JWT: jwtManager,
+	}
+	todov1.RegisterTaskServiceServer(grpcServer, TaskService)
 
 	lis, err := net.Listen("tcp", os.Getenv("GRPC_PORT")) // напр. ":50051"
 	if err != nil {

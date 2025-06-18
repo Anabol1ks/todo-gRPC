@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"log"
 	"strings"
 
 	"github.com/Anabol1ks/todo-gRPC/internal/auth"
@@ -28,7 +27,6 @@ func AuthInterceptor(jwtManager *auth.JWTManager, publicMethods map[string]bool)
 		if !ok {
 			return nil, status.Error(codes.Unauthenticated, "missing metadata")
 		}
-		log.Println("Metadata found:", md)
 
 		authHeader := md["authorization"]
 		if len(authHeader) == 0 {
@@ -36,7 +34,6 @@ func AuthInterceptor(jwtManager *auth.JWTManager, publicMethods map[string]bool)
 		}
 
 		token := strings.TrimPrefix(authHeader[0], "Bearer ")
-		log.Printf("Parsed token: %s", token)
 		claims, err := jwtManager.Parse(token, false)
 		if err != nil {
 			return nil, status.Error(codes.Unauthenticated, "invalid token !!!!!")
