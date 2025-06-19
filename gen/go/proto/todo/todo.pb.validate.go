@@ -1044,6 +1044,108 @@ var _ interface {
 	ErrorName() string
 } = GetTasksRequestValidationError{}
 
+// Validate checks the field values on GetTaskRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *GetTaskRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetTaskRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in GetTaskRequestMultiError,
+// or nil if none found.
+func (m *GetTaskRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetTaskRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if len(errors) > 0 {
+		return GetTaskRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetTaskRequestMultiError is an error wrapping multiple validation errors
+// returned by GetTaskRequest.ValidateAll() if the designated constraints
+// aren't met.
+type GetTaskRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetTaskRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetTaskRequestMultiError) AllErrors() []error { return m }
+
+// GetTaskRequestValidationError is the validation error returned by
+// GetTaskRequest.Validate if the designated constraints aren't met.
+type GetTaskRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetTaskRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetTaskRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetTaskRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetTaskRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetTaskRequestValidationError) ErrorName() string { return "GetTaskRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e GetTaskRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetTaskRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetTaskRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetTaskRequestValidationError{}
+
 // Validate checks the field values on TasksList with the rules defined in the
 // proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -1446,6 +1548,8 @@ func (m *Empty) validate(all bool) error {
 	}
 
 	var errors []error
+
+	// no validation rules for Value
 
 	if len(errors) > 0 {
 		return EmptyMultiError(errors)

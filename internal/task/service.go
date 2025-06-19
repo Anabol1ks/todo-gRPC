@@ -53,13 +53,78 @@ func (s *Service) CreateTask(ctx context.Context, req *todov1.CreateTaskRequest)
 
 }
 
-// func (s *Service) GetTask(ctx context.Context, req *todov1.GetTasksRequest) (*todov1.TaskResponse, error) {
-// 	op := "GetTask"
-// 	log.Printf("[%s] start", op)
+func (s *Service) GetTasks(ctx context.Context, req *todov1.GetTasksRequest) (*todov1.TasksList, error) {
+	op := "GetTasks"
+	log.Printf("[%s] start", op)
 
-// 	userID, ok := ctx.Value("user_id").(uint64)
-// 	if !ok {
-// 		return nil, status.Error(codes.Internal, "user_id not found in context")
-// 	}
+	userID, ok := ctx.Value("user_id").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Internal, "user_id not found in context")
+	}
 
-// }
+	var tasks []models.Task
+	if err := s.DB.Where("user_id = ?", userID).Find(&tasks).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to retrieve tasks")
+	}
+
+	var taskResponses []*todov1.TaskResponse
+	for _, task := range tasks {
+		taskResponses = append(taskResponses, &todov1.TaskResponse{
+			Id:          uint64(task.ID),
+			Title:       task.Title,
+			Description: task.Description,
+			Status:      task.Status,
+			UserId:      uint64(task.UserID),
+		})
+	}
+
+	return &todov1.TasksList{
+		Tasks: taskResponses,
+	}, nil
+}
+
+func (s *Service) GetTask(ctx context.Context, req *todov1.GetTaskRequest) (*todov1.TaskResponse, error) {
+	op := "GetTask"
+	log.Printf("[%s] start", op)
+
+	userID, ok := ctx.Value("user_id").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Internal, "user_id not found in context")
+	}
+
+	var task models.Task
+	if err := s.DB.Where("id = ? AND user_id = ?", req.Id, userID).First(&task).Error; err != nil {
+		return nil, status.Error(codes.NotFound, "task not found")
+	}
+
+	return &todov1.TaskResponse{
+		Id:          uint64(task.ID),
+		Title:       task.Title,
+		Description: task.Description,
+		Status:      task.Status,
+		UserId:      uint64(task.UserID),
+	}, nil
+}
+
+func (s *Service) DeleteTask(ctx context.Context, req *todov1.DeleteTaskRequest) (*todov1.Empty, error) {
+	op := "DeleteTask"
+	log.Printf("[%s] start", op)
+
+	userID, ok := ctx.Value("user_id").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Internal, "user_id not found in context")
+	}
+
+	var task models.Task
+	if err := s.DB.Where("id = ? AND user_id = ?", req.Id, userID).First(&task).Error; err != nil {
+		return nil, status.Error(codes.NotFound, "task not found")
+	}
+
+	if err := s.DB.Delete(&task).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to delete task")
+	}
+
+	return &todov1.Empty{
+		Value: "Task deleted successfully",
+	}, nil
+}

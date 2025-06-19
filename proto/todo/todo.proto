@@ -15,6 +15,7 @@ service UserService {
 service TaskService {
   rpc CreateTask(CreateTaskRequest) returns (TaskResponse);
   rpc GetTasks(GetTasksRequest) returns (TasksList);
+  rpc GetTask(GetTaskRequest) returns (TaskResponse);
   rpc UpdateTask(UpdateTaskRequest) returns (TaskResponse);
   rpc DeleteTask(DeleteTaskRequest) returns (Empty);
 }
@@ -65,6 +66,11 @@ message GetTasksRequest {
   uint64 user_id = 1;
 }
 
+message GetTaskRequest {
+  uint64 id = 1;
+}
+
+
 message TasksList {
   repeated TaskResponse tasks = 1;
 }
@@ -81,4 +87,6 @@ message DeleteTaskRequest {
   uint64 id = 1;
 }
 
-message Empty {}
+message Empty {
+  string value = 1;
+}
