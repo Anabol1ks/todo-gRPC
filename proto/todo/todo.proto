@@ -4,12 +4,12 @@ package todo;
 
 option go_package = "anabol1ks.todo.v1;todov1";
 
-import "validate/validate.proto";
 
 service UserService {
   rpc Register(RegisterRequest) returns (AuthResponse);
   rpc Login(LoginRequest) returns (AuthResponse);
   rpc GetProfile(GetProfileRequest) returns (UserResponse);
+  rpc RefreshToken(RefreshTokenRequest) returns (AuthResponse);
 }
 
 service TaskService {
@@ -89,4 +89,8 @@ message DeleteTaskRequest {
 
 message Empty {
   string value = 1;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
 }

@@ -28,8 +28,9 @@ func main() {
 	}
 
 	publicMethods := map[string]bool{
-		"/todo.UserService/Register": true,
-		"/todo.UserService/Login":    true,
+		"/todo.UserService/Register":     true,
+		"/todo.UserService/Login":        true,
+		"/todo.UserService/RefreshToken": true,
 	}
 
 	grpcServer := grpc.NewServer(

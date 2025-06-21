@@ -106,3 +106,35 @@ func (s *Service) GetProfile(ctx context.Context, req *todov1.GetProfileRequest)
 		Email:    user.Email,
 	}, nil
 }
+
+func (s *Service) RefreshToken(ctx context.Context, req *todov1.RefreshTokenRequest) (*todov1.AuthResponse, error) {
+	op := "RefreshToken"
+	log.Printf("[%s] start", op)
+
+	if req.RefreshToken == "" {
+		return nil, status.Error(codes.InvalidArgument, "refresh token is required")
+	}
+
+	log.Println(req)
+
+	userID, err := s.JWT.VerifyRefresh(req.RefreshToken)
+	if err != nil {
+		log.Println(err)
+		return nil, status.Error(codes.Unauthenticated, "invalid refresh token")
+	}
+
+	var user models.User
+	if err := s.DB.First(&user, userID).Error; err != nil {
+		return nil, status.Error(codes.NotFound, "user not found")
+	}
+
+	newAccess, newRefresh, err := s.JWT.Generate(user.ID)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "failed to generate new tokens")
+	}
+
+	return &todov1.AuthResponse{
+		AccessToken:  newAccess,
+		RefreshToken: newRefresh,
+	}, nil
+}

@@ -738,6 +738,50 @@ func (x *Empty) GetValue() string {
 	return ""
 }
 
+type RefreshTokenRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RefreshToken  string                 `protobuf:"bytes,1,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RefreshTokenRequest) Reset() {
+	*x = RefreshTokenRequest{}
+	mi := &file_proto_todo_todo_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RefreshTokenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RefreshTokenRequest) ProtoMessage() {}
+
+func (x *RefreshTokenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_todo_todo_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RefreshTokenRequest.ProtoReflect.Descriptor instead.
+func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
+	return file_proto_todo_todo_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *RefreshTokenRequest) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
+	}
+	return ""
+}
+
 var File_proto_todo_todo_proto protoreflect.FileDescriptor
 
 const file_proto_todo_todo_proto_rawDesc = "" +
@@ -790,12 +834,15 @@ const file_proto_todo_todo_proto_rawDesc = "" +
 	"\x11DeleteTaskRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x04R\x02id\"\x1d\n" +
 	"\x05Empty\x12\x14\n" +
-	"\x05value\x18\x01 \x01(\tR\x05value2\xb0\x01\n" +
+	"\x05value\x18\x01 \x01(\tR\x05value\":\n" +
+	"\x13RefreshTokenRequest\x12#\n" +
+	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken2\xef\x01\n" +
 	"\vUserService\x125\n" +
 	"\bRegister\x12\x15.todo.RegisterRequest\x1a\x12.todo.AuthResponse\x12/\n" +
 	"\x05Login\x12\x12.todo.LoginRequest\x1a\x12.todo.AuthResponse\x129\n" +
 	"\n" +
-	"GetProfile\x12\x17.todo.GetProfileRequest\x1a\x12.todo.UserResponse2\xa0\x02\n" +
+	"GetProfile\x12\x17.todo.GetProfileRequest\x1a\x12.todo.UserResponse\x12=\n" +
+	"\fRefreshToken\x12\x19.todo.RefreshTokenRequest\x1a\x12.todo.AuthResponse2\xa0\x02\n" +
 	"\vTaskService\x129\n" +
 	"\n" +
 	"CreateTask\x12\x17.todo.CreateTaskRequest\x1a\x12.todo.TaskResponse\x122\n" +
@@ -818,42 +865,45 @@ func file_proto_todo_todo_proto_rawDescGZIP() []byte {
 	return file_proto_todo_todo_proto_rawDescData
 }
 
-var file_proto_todo_todo_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_proto_todo_todo_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_proto_todo_todo_proto_goTypes = []any{
-	(*RegisterRequest)(nil),   // 0: todo.RegisterRequest
-	(*AuthResponse)(nil),      // 1: todo.AuthResponse
-	(*LoginRequest)(nil),      // 2: todo.LoginRequest
-	(*GetProfileRequest)(nil), // 3: todo.GetProfileRequest
-	(*UserResponse)(nil),      // 4: todo.UserResponse
-	(*CreateTaskRequest)(nil), // 5: todo.CreateTaskRequest
-	(*TaskResponse)(nil),      // 6: todo.TaskResponse
-	(*GetTasksRequest)(nil),   // 7: todo.GetTasksRequest
-	(*GetTaskRequest)(nil),    // 8: todo.GetTaskRequest
-	(*TasksList)(nil),         // 9: todo.TasksList
-	(*UpdateTaskRequest)(nil), // 10: todo.UpdateTaskRequest
-	(*DeleteTaskRequest)(nil), // 11: todo.DeleteTaskRequest
-	(*Empty)(nil),             // 12: todo.Empty
+	(*RegisterRequest)(nil),     // 0: todo.RegisterRequest
+	(*AuthResponse)(nil),        // 1: todo.AuthResponse
+	(*LoginRequest)(nil),        // 2: todo.LoginRequest
+	(*GetProfileRequest)(nil),   // 3: todo.GetProfileRequest
+	(*UserResponse)(nil),        // 4: todo.UserResponse
+	(*CreateTaskRequest)(nil),   // 5: todo.CreateTaskRequest
+	(*TaskResponse)(nil),        // 6: todo.TaskResponse
+	(*GetTasksRequest)(nil),     // 7: todo.GetTasksRequest
+	(*GetTaskRequest)(nil),      // 8: todo.GetTaskRequest
+	(*TasksList)(nil),           // 9: todo.TasksList
+	(*UpdateTaskRequest)(nil),   // 10: todo.UpdateTaskRequest
+	(*DeleteTaskRequest)(nil),   // 11: todo.DeleteTaskRequest
+	(*Empty)(nil),               // 12: todo.Empty
+	(*RefreshTokenRequest)(nil), // 13: todo.RefreshTokenRequest
 }
 var file_proto_todo_todo_proto_depIdxs = []int32{
 	6,  // 0: todo.TasksList.tasks:type_name -> todo.TaskResponse
 	0,  // 1: todo.UserService.Register:input_type -> todo.RegisterRequest
 	2,  // 2: todo.UserService.Login:input_type -> todo.LoginRequest
 	3,  // 3: todo.UserService.GetProfile:input_type -> todo.GetProfileRequest
-	5,  // 4: todo.TaskService.CreateTask:input_type -> todo.CreateTaskRequest
-	7,  // 5: todo.TaskService.GetTasks:input_type -> todo.GetTasksRequest
-	8,  // 6: todo.TaskService.GetTask:input_type -> todo.GetTaskRequest
-	10, // 7: todo.TaskService.UpdateTask:input_type -> todo.UpdateTaskRequest
-	11, // 8: todo.TaskService.DeleteTask:input_type -> todo.DeleteTaskRequest
-	1,  // 9: todo.UserService.Register:output_type -> todo.AuthResponse
-	1,  // 10: todo.UserService.Login:output_type -> todo.AuthResponse
-	4,  // 11: todo.UserService.GetProfile:output_type -> todo.UserResponse
-	6,  // 12: todo.TaskService.CreateTask:output_type -> todo.TaskResponse
-	9,  // 13: todo.TaskService.GetTasks:output_type -> todo.TasksList
-	6,  // 14: todo.TaskService.GetTask:output_type -> todo.TaskResponse
-	6,  // 15: todo.TaskService.UpdateTask:output_type -> todo.TaskResponse
-	12, // 16: todo.TaskService.DeleteTask:output_type -> todo.Empty
-	9,  // [9:17] is the sub-list for method output_type
-	1,  // [1:9] is the sub-list for method input_type
+	13, // 4: todo.UserService.RefreshToken:input_type -> todo.RefreshTokenRequest
+	5,  // 5: todo.TaskService.CreateTask:input_type -> todo.CreateTaskRequest
+	7,  // 6: todo.TaskService.GetTasks:input_type -> todo.GetTasksRequest
+	8,  // 7: todo.TaskService.GetTask:input_type -> todo.GetTaskRequest
+	10, // 8: todo.TaskService.UpdateTask:input_type -> todo.UpdateTaskRequest
+	11, // 9: todo.TaskService.DeleteTask:input_type -> todo.DeleteTaskRequest
+	1,  // 10: todo.UserService.Register:output_type -> todo.AuthResponse
+	1,  // 11: todo.UserService.Login:output_type -> todo.AuthResponse
+	4,  // 12: todo.UserService.GetProfile:output_type -> todo.UserResponse
+	1,  // 13: todo.UserService.RefreshToken:output_type -> todo.AuthResponse
+	6,  // 14: todo.TaskService.CreateTask:output_type -> todo.TaskResponse
+	9,  // 15: todo.TaskService.GetTasks:output_type -> todo.TasksList
+	6,  // 16: todo.TaskService.GetTask:output_type -> todo.TaskResponse
+	6,  // 17: todo.TaskService.UpdateTask:output_type -> todo.TaskResponse
+	12, // 18: todo.TaskService.DeleteTask:output_type -> todo.Empty
+	10, // [10:19] is the sub-list for method output_type
+	1,  // [1:10] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -870,7 +920,7 @@ func file_proto_todo_todo_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_todo_todo_proto_rawDesc), len(file_proto_todo_todo_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

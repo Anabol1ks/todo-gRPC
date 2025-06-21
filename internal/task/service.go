@@ -3,6 +3,7 @@ package task
 import (
 	"context"
 	"log"
+	"time"
 
 	todov1 "github.com/Anabol1ks/todo-gRPC/gen/go/proto/todo"
 	"github.com/Anabol1ks/todo-gRPC/internal/auth"
@@ -22,6 +23,10 @@ func (s *Service) CreateTask(ctx context.Context, req *todov1.CreateTaskRequest)
 	op := "CreateTask"
 	log.Printf("[%s] start", op)
 
+	if err := req.Validate(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "validation failed: %v", err)
+	}
+
 	userID, ok := ctx.Value("user_id").(uint64)
 	if !ok {
 		return nil, status.Error(codes.Internal, "user_id not found in context")
@@ -36,6 +41,9 @@ func (s *Service) CreateTask(ctx context.Context, req *todov1.CreateTaskRequest)
 		Title:       req.Title,
 		Description: req.Description,
 		UserID:      user.ID,
+		Status:      "pending",
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 
 	if err := s.DB.Create(&task).Error; err != nil {
@@ -126,5 +134,41 @@ func (s *Service) DeleteTask(ctx context.Context, req *todov1.DeleteTaskRequest)
 
 	return &todov1.Empty{
 		Value: "Task deleted successfully",
+	}, nil
+}
+
+func (s *Service) UpdateTask(ctx context.Context, req *todov1.UpdateTaskRequest) (*todov1.TaskResponse, error) {
+	op := "UpdateTask"
+	log.Printf("[%s] start", op)
+
+	if err := req.Validate(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "validation failed: %v", err)
+	}
+
+	userID, ok := ctx.Value("user_id").(uint64)
+	if !ok {
+		return nil, status.Error(codes.Internal, "user_id not found in context")
+	}
+
+	var task models.Task
+	if err := s.DB.Where("id = ? AND user_id = ?", req.Id, userID).First(&task).Error; err != nil {
+		return nil, status.Error(codes.NotFound, "task not found")
+	}
+
+	task.Title = req.Title
+	task.Description = req.Description
+	task.Status = req.Status
+	task.UpdatedAt = time.Now()
+
+	if err := s.DB.Save(&task).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to update task")
+	}
+
+	return &todov1.TaskResponse{
+		Id:          uint64(task.ID),
+		Title:       task.Title,
+		Description: task.Description,
+		Status:      task.Status,
+		UserId:      uint64(task.UserID),
 	}, nil
 }
